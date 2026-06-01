@@ -1,0 +1,7 @@
+.venv/
+.jupyter_config/
+.jupyter_data/
+.jupyter_runtime/
+.serena/
+.ipynb_checkpoints/
+__pycache__/
