@@ -49,14 +49,37 @@ Recommender systems (e.g., Netflix, Amazon) frequently utilize collaborative fil
 *   **The Math (Dot Product):** We assign latent factor vectors to each user ($\mathbf{u}$) and item ($\mathbf{v}$). The predicted rating $\hat{r}_{ui}$ is the dot product of these vectors plus user and item biases:
     $$ \hat{r}_{ui} = \mathbf{u} \cdot \mathbf{v} + b_u + b_i $$
 *   **Embeddings:** An embedding is a computational shortcut. Mathematically, it is equivalent to multiplying a one-hot encoded vector $\mathbf{x}$ by a weight matrix $W$. Because $\mathbf{x}^T W = W_{i,*}$ (where $i$ is the active index), PyTorch bypasses the matrix multiplication and performs a direct memory lookup.
+    *   **Example:** Imagine a vocabulary of 5 words and a weight matrix $W$ of size $5 \times 3$ (each word has a 3-dimensional embedding).
+    To get the embedding for word index 2, the mathematical formulation is:
+    $$ \begin{bmatrix} 0 & 0 & 1 & 0 & 0 \end{bmatrix} \times \begin{bmatrix} 0.1 & 0.2 & 0.3 \\ 0.4 & 0.5 & 0.6 \\ \mathbf{0.7} & \mathbf{0.8} & \mathbf{0.9} \\ 1.0 & 1.1 & 1.2 \\ 1.3 & 1.4 & 1.5 \end{bmatrix} = \begin{bmatrix} 0.7 & 0.8 & 0.9 \end{bmatrix} $$
+    Instead of performing 15 floating-point multiplications and additions (most of which are multiplied by 0), an `nn.Embedding` layer simply fetches row 2 directly from memory: `W[2]`. It is an $O(1)$ index lookup rather than an $O(N)$ matrix multiplication.
 *   **Weight Decay (L2 Regularization):** To prevent latent factors from unbounded growth (overfitting), an $L_2$ penalty $\lambda$ is added to the loss function:
     $$ \text{Loss} = \sum(r_{ui} - \hat{r}_{ui})^2 + \lambda(\|\mathbf{U}\|^2 + \|\mathbf{V}\|^2) $$
+    *   **Why we do this:** Without constraints, gradient descent might find that multiplying a user factor of $1000$ by an item factor of $0.005$ perfectly fits a specific training rating of $5.0$. However, these extreme, highly specialized numbers will fail disastrously on unseen data (overfitting).
+    *   **Example:** By adding the squared magnitude of the weights to the loss, the optimizer is penalized for large numbers. It forces the network to distribute the "concept" of the rating across all latent factors (e.g., $u=[1.1, 2.0, -0.5]$ and $v=[2.0, 1.0, -1.6]$) resulting in smaller, more generalized weights that perform better on validation data.
 
 #### 3.4 Tabular Data & Random Forests
 Deep learning is not universally optimal; for tabular (spreadsheet) data, **Random Forests** generally serve as the superior baseline.
 *   **The Math (Splitting & Impurity):** Decision trees partition data by searching for binary splits that maximize information gain, typically measured by Gini Impurity. For $C$ classes, where $p_i$ is the fraction of items in class $i$:
     $$ G = 1 - \sum_{i=1}^{C} p_i^2 $$
     The algorithm greedily selects the split that yields the largest drop in $G$.
+    *   **Impurity Split Diagram:**
+    ```text
+                         [ Root Node ]
+                      10 Cats, 10 Dogs (Mixed)
+                      Gini Impurity: High (0.5)
+                               |
+                   Feature: "Weight > 20 lbs?"
+                               |
+                -------------------------------
+               |                               |
+          [ Left Node ]                 [ Right Node ]
+        True: 9 Dogs, 1 Cat          False: 9 Cats, 1 Dog
+      Gini Impurity: Low (0.18)    Gini Impurity: Low (0.18)
+      
+      Conclusion: Splitting by weight successfully separated the 
+      classes, drastically reducing overall impurity.
+    ```
 *   **Bagging:** A Random Forest is an ensemble of unpruned, high-variance decision trees trained on random bootstrapped subsets of data. The final prediction $\hat{y}$ is the average of all $M$ tree predictions:
     $$ \hat{y} = \frac{1}{M} \sum_{j=1}^{M} f_j(x) $$
     Because the individual trees are unbiased but structurally diverse, their uncorrelated errors cancel out upon averaging.
