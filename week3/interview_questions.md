@@ -1,6 +1,6 @@
 # Tech Interview Preparation: Deep Learning & Tabular Data
 
-This document contains precise, high-signal Q&A pairs for data science and machine learning interviews, focusing on recommendation systems, regularization, and tree-based ensembles.
+This document contains precise, high-signal Q&A pairs for data science and machine learning interviews, covering recommendation systems, regularization, tree-based ensembles, embeddings, transfer learning, and NLP preprocessing.
 
 ---
 
@@ -33,3 +33,32 @@ This document contains precise, high-signal Q&A pairs for data science and machi
 
 **Q: When preparing categorical data (like "City") for a Random Forest, is One-Hot Encoding necessary?**
 **A:** Generally, no. Unlike linear models or neural networks that rely on dot products, decision trees only require ordinal or numeric values to define split thresholds. Categorical variables can simply be mapped to arbitrary integer codes (e.g., NY=1, LA=2, Chicago=3). The tree will numerically partition the data (e.g., `City Code <= 1.5`). In fact, One-Hot Encoding can negatively impact tree performance by creating highly sparse, imbalanced splits.
+
+---
+
+### Topic 3: Embeddings
+
+**Q: What is an embedding in the context of deep learning?**
+**A:** An embedding is a dense, low-dimensional vector representation of categorical data or discrete items (like words, users, or products). It captures semantic relationships and latent traits in a continuous vector space, allowing similar items to have similar vector representations.
+
+**Q: Mathematically, how does an embedding layer differ from multiplying by a one-hot encoded vector?**
+**A:** Mathematically, they are exactly equivalent. Multiplying a one-hot encoded vector by a weight matrix isolates a specific row of that matrix. However, an embedding layer acts as an architectural and computational shortcut; instead of performing expensive matrix multiplications where the vast majority of terms are zero, it performs a direct $O(1)$ memory index lookup to fetch the corresponding row.
+
+---
+
+### Topic 4: Transfer Learning (Computer Vision & General)
+
+**Q: What is Transfer Learning and why is it essential in modern deep learning?**
+**A:** Transfer Learning involves taking a model pre-trained on a massive, general dataset (like ImageNet for vision) and fine-tuning it for a specific, narrower task. It is essential because training deep networks from scratch requires massive amounts of data and computational resources, whereas transfer learning drastically reduces both while achieving higher accuracy and faster convergence.
+
+**Q: Explain the process of adapting a pre-trained model for a new classification task.**
+**A:** First, we remove the model's "head" (the final classification layer) and replace it with a newly initialized weight matrix matching the number of target classes in our specific dataset. We then "freeze" the foundational layers (preventing their weights from updating during backpropagation) and train only the new head using gradient descent. Once the head is stable, we may unfreeze the entire network and fine-tune it with a highly suppressed learning rate.
+
+---
+
+### Topic 5: Natural Language Processing (NLP) Preprocessing
+
+**Q: Before feeding text into a Transformer model, what preprocessing steps are fundamentally required?**
+**A:** Raw text must undergo two main steps: Tokenization and Numericalization.
+1. **Tokenization:** The text is parsed into smaller, discrete sub-word units called tokens (e.g., separating punctuation, prefixes, and root words).
+2. **Numericalization:** Each token is mapped to a unique integer ID based on the pre-trained model's specific vocabulary. This converts the sequence of text into a 1D tensor of integers that the neural network can mathematically process via its embedding layers.
