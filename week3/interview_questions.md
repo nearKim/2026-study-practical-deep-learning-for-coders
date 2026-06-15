@@ -1,45 +1,35 @@
-# Mock Tech Interview: Junior Data Scientist
+# Tech Interview Preparation: Deep Learning & Tabular Data
 
-**Interviewer (Senior ML Engineer):** Welcome! Today we are going to dive into some fundamental machine learning concepts. We'll be covering recommendation systems, regularization, and tree-based models. Let's start with Collaborative Filtering.
+This document contains precise, high-signal Q&A pairs for data science and machine learning interviews, focusing on recommendation systems, regularization, and tree-based ensembles.
 
 ---
 
 ### Topic 1: Collaborative Filtering & L2 Regularization
 
-**Interviewer:** Can you explain how Matrix Factorization (using embeddings) works in Collaborative Filtering?
+**Q: How does Matrix Factorization work in the context of Collaborative Filtering?**
+**A:** Matrix Factorization decomposes a large, sparse user-item interaction matrix into two smaller, dense matrices: one for Users and one for Items. Each user and item is represented by a dense vector of latent factors (an embedding). To predict a rating or interaction, the model computes the dot product of the specific user's embedding and the item's embedding, optionally adding user and item biases.
 
-**Candidate:** Sure. In a recommendation system, we have a massive, sparse matrix of Users and Items (like movies). Matrix Factorization breaks this giant matrix down into two smaller, dense matrices: one for Users and one for Items. We represent each user and item as an "embedding"—a vector of latent factors. To predict a rating, we just take the dot product of the user's embedding and the item's embedding.
+**Q: What happens if L2 Regularization (Weight Decay) is NOT applied when training these embeddings?**
+**A:** The model will severely overfit the training data. Because interaction matrices are highly sparse, gradient descent can easily inflate the embedding weights to extreme values (e.g., assigning a factor of `1000` to a user and `0.005` to an item) to achieve a perfect 0 loss on a specific training sample. 
 
-**Interviewer:** Good. Now, what happens if we *don't* apply L2 Regularization (Weight Decay) when training those embeddings?
+**Q: How does this unregularized behavior affect performance on unseen data?**
+**A:** It results in catastrophic failure. The model memorizes the noise of the sparse training set rather than learning generalizable latent features. When an unregularized, inflated user vector is multiplied by a new item vector during inference, the dot product will yield wild, nonsensical predictions.
 
-**Candidate:** If we don't constrain the model, it will heavily overfit the training data. Because the matrix is sparse, a user might have only rated one or two niche movies. Without L2 regularization, the gradient descent algorithm will inflate the embedding weights to extreme values (e.g., assigning a factor of `1000` to the user and `0.005` to the movie) just to perfectly output a 5-star rating for that specific training example. 
-
-**Interviewer:** And how would that behave on a real dataset?
-
-**Candidate:** Disastrously. It would memorize the noise in the training set. When that user logs in and we try to predict their rating for a *new* movie they haven't seen, that inflated factor of `1000` will multiply with the new movie's factors, resulting in wild, nonsensical predictions. 
-
-**Interviewer:** Exactly. So how does L2 Regularization fix that?
-
-**Candidate:** L2 Regularization adds the squared magnitude of all the embedding weights to the loss function. It essentially tells the optimizer: *"Minimize the error, but do it using the smallest numbers possible."* This forces the model to distribute the learning across *all* the latent factors rather than relying on one massive outlier, resulting in a generalized model that handles unseen data much better.
+**Q: How exactly does L2 Regularization solve this overfitting problem?**
+**A:** L2 Regularization adds an penalty term to the loss function equal to the sum of the squared magnitude of all embedding weights (multiplied by a hyperparameter $\lambda$). This forces the optimizer to minimize both the prediction error *and* the size of the weights. The model is forced to distribute the "concept" of a rating across all latent factors rather than relying on massive outliers, resulting in smaller, generalized weights that perform robustly on unseen data.
 
 ---
 
 ### Topic 2: Tabular Data & Random Forests
 
-**Interviewer:** Let's switch gears to tabular data. You're building a Random Forest classifier. Walk me through how a single Decision Tree decides where to split the data.
+**Q: In a Decision Tree, how does the algorithm determine where to split the data?**
+**A:** The algorithm searches across all features for a binary split that maximizes Information Gain or minimizes Impurity (commonly measured via Gini Impurity). For example, if a node contains an equal mix of two classes, its impurity is high. The algorithm tests threshold values (e.g., `feature_X > 2.5`) and selects the split that results in two child nodes that are as homogeneous (pure) as possible.
 
-**Candidate:** A Decision Tree looks at all the features and tries to find a binary split that maximizes "Information Gain" or minimizes "Impurity." It usually measures this using Gini Impurity. 
-For example, if a node has 10 cats and 10 dogs, it's highly impure (mixed). The tree will test a feature, say "Weight > 20 lbs". If that split results in one node being almost all dogs, and the other node being almost all cats, the Gini Impurity drops significantly. The tree greedily picks the split that drops the impurity the most.
+**Q: Decision trees are known to have high variance and overfit easily. How does a Random Forest resolve this?**
+**A:** A Random Forest relies on an ensemble technique called **Bagging** (Bootstrap Aggregating):
+1. **Bootstrap:** It generates multiple subsets of the training data by sampling with replacement.
+2. **Train:** It trains an independent, unpruned decision tree on each subset. Furthermore, at each split, it only considers a random subset of features.
+3. **Aggregate:** Because the individual trees are trained on different data and features, they overfit in distinct, uncorrelated ways. By averaging their predictions (or taking a majority vote), the uncorrelated errors cancel out, leaving a robust, low-variance prediction.
 
-**Interviewer:** That makes sense for one tree. But decision trees are notoriously prone to overfitting. How does a Random Forest solve this?
-
-**Candidate:** It uses a technique called **Bagging** (Bootstrap Aggregating). 
-1. **Bootstrap:** It creates many subsets of the training data by sampling *with replacement*. 
-2. **Train:** It trains a full, unpruned decision tree on each of these subsets. It also randomly restricts the features each tree is allowed to look at during a split.
-3. **Aggregate:** Because each tree sees slightly different data and features, they all overfit in slightly different, uncorrelated ways. When we average their predictions together, those individual errors cancel out. We're left with a highly accurate, robust prediction.
-
-**Interviewer:** Great explanation. Final question: In pandas, if you have a categorical column like "City", do you need to One-Hot Encode it before feeding it into a Random Forest?
-
-**Candidate:** Usually, no. Unlike linear models or neural networks (which require numbers to perform matrix multiplication), decision trees just need to find a split point. You can simply map the cities to numeric codes (e.g., NY=1, LA=2, Chicago=3). The tree will just split the data numerically (e.g., "City code < 2.5"). While One-Hot Encoding *works*, it can actually degrade the performance of a tree by making the data overly sparse.
-
-**Interviewer:** Spot on. You clearly understand the mechanics under the hood. Great job!
+**Q: When preparing categorical data (like "City") for a Random Forest, is One-Hot Encoding necessary?**
+**A:** Generally, no. Unlike linear models or neural networks that rely on dot products, decision trees only require ordinal or numeric values to define split thresholds. Categorical variables can simply be mapped to arbitrary integer codes (e.g., NY=1, LA=2, Chicago=3). The tree will numerically partition the data (e.g., `City Code <= 1.5`). In fact, One-Hot Encoding can negatively impact tree performance by creating highly sparse, imbalanced splits.
