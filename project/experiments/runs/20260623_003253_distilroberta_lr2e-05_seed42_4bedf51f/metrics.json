@@ -1,0 +1,48 @@
+{
+  "config": {
+    "clean_text": false,
+    "curate_training_duplicates": true,
+    "eval_batch_size": 16,
+    "eval_steps": 100,
+    "eval_strategy": "steps",
+    "gradient_accumulation_steps": 1,
+    "learning_rate": 2e-05,
+    "max_length": 128,
+    "model_name": "distilroberta-base",
+    "name": "distilroberta_lr2e-05_seed42",
+    "num_train_epochs": 3,
+    "save_steps": 100,
+    "save_strategy": "steps",
+    "save_total_limit": 2,
+    "seed": 42,
+    "split_version": "v1",
+    "test_csv": "test.csv",
+    "text_variant": "keyword_tweet",
+    "train_batch_size": 16,
+    "train_csv": "train.csv",
+    "use_dynamic_padding": true,
+    "warmup_ratio": 0.06,
+    "weight_decay": 0.01
+  },
+  "holdout": {
+    "accuracy": 0.8110236220472441,
+    "f1": 0.7662337662337663,
+    "precision": 0.8329411764705882,
+    "recall": 0.7094188376753507,
+    "threshold": 0.605
+  },
+  "row_counts": {
+    "holdout": 1143,
+    "train": 5261,
+    "val": 1127
+  },
+  "run_id": "20260623_003253_distilroberta_lr2e-05_seed42_4bedf51f",
+  "threshold": 0.605,
+  "val": {
+    "accuracy": 0.834072759538598,
+    "f1": 0.7915273132664437,
+    "precision": 0.8700980392156863,
+    "recall": 0.7259713701431493,
+    "threshold": 0.605
+  }
+}

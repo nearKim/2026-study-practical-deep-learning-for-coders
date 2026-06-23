@@ -1,0 +1,27 @@
+{
+  "holdout": {
+    "accuracy": 0.8258967629046369,
+    "f1": 0.7880724174653887,
+    "precision": 0.8409090909090909,
+    "recall": 0.7414829659318637,
+    "threshold": 0.54
+  },
+  "run_dirs": [
+    "project/experiments/runs/20260623_003253_distilroberta_lr2e-05_seed42_4bedf51f",
+    "project/experiments/runs/20260623_015914_distilroberta_lr2e-05_seed13_229915b9",
+    "project/experiments/runs/20260623_020958_tfidf_keyword_location_logreg_bb4d1c3a"
+  ],
+  "threshold": 0.54,
+  "val": {
+    "accuracy": 0.839396628216504,
+    "f1": 0.7995570321151716,
+    "precision": 0.8719806763285024,
+    "recall": 0.7382413087934561,
+    "threshold": 0.54
+  },
+  "weights": [
+    0.29,
+    0.22,
+    0.49
+  ]
+}

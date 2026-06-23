@@ -1,0 +1,11 @@
+{
+  "c": 1.0,
+  "class_weight": null,
+  "curate_training_duplicates": true,
+  "name": "tfidf_keyword_location_logreg",
+  "seed": 42,
+  "split_version": "v1",
+  "test_csv": "test.csv",
+  "text_variant": "keyword_location_flag",
+  "train_csv": "train.csv"
+}

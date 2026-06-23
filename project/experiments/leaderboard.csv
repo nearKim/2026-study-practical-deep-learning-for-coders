@@ -1,0 +1,4 @@
+run_id,config_name,split_version,seed,model_name,text_variant,val_acc_tuned,holdout_acc_tuned,best_threshold,notes
+20260623_003253_distilroberta_lr2e-05_seed42_4bedf51f,distilroberta_lr2e-05_seed42,v1,42,distilroberta-base,keyword_tweet,0.834072759538598,0.8110236220472441,0.605,
+20260623_015914_distilroberta_lr2e-05_seed13_229915b9,distilroberta_lr2e-05_seed13,v1,13,distilroberta-base,keyword_tweet,0.8358473824312334,0.821522309711286,0.5,
+20260623_020958_tfidf_keyword_location_logreg_bb4d1c3a,tfidf_keyword_location_logreg,v1,42,tfidf_logistic_regression,keyword_location_flag,0.8012422360248447,0.800524934383202,0.435,best sparse lexical companion for transformer ensemble

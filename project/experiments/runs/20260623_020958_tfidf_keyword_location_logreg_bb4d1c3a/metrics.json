@@ -1,0 +1,35 @@
+{
+  "config": {
+    "c": 1.0,
+    "class_weight": null,
+    "curate_training_duplicates": true,
+    "name": "tfidf_keyword_location_logreg",
+    "seed": 42,
+    "split_version": "v1",
+    "test_csv": "test.csv",
+    "text_variant": "keyword_location_flag",
+    "train_csv": "train.csv"
+  },
+  "holdout": {
+    "accuracy": 0.800524934383202,
+    "f1": 0.7682926829268293,
+    "precision": 0.7793814432989691,
+    "recall": 0.7575150300601202,
+    "threshold": 0.435
+  },
+  "model_name": "tfidf_logistic_regression",
+  "row_counts": {
+    "holdout": 1143,
+    "train": 5261,
+    "val": 1127
+  },
+  "run_id": "20260623_020958_tfidf_keyword_location_logreg_bb4d1c3a",
+  "threshold": 0.435,
+  "val": {
+    "accuracy": 0.8012422360248447,
+    "f1": 0.7671517671517671,
+    "precision": 0.7801268498942917,
+    "recall": 0.754601226993865,
+    "threshold": 0.435
+  }
+}
